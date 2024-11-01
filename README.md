@@ -10,11 +10,6 @@ Este projeto implementa um **crawler em Python** que coleta notícias sobre vaga
 ## Objetivo Acadêmico
 Esse trabalho faz parte de uma atividade prática em que grupos de alunos desenvolveram ideias sociais aplicáveis à Grande Vitória e as implementaram com web crawlers. Cada grupo deve demonstrar a solução em um vídeo de apresentação.
 
-## Avaliação
-- **Criatividade e complexidade**: 60%
-- **Implementação de código**: 20%
-- **Execução e salvamento de dados**: 20%
-
 > **Pré-requisito**: vídeo de apresentação entre 5 e 15 minutos postado no Classroom.
 
 ---
