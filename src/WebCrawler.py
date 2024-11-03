@@ -15,7 +15,6 @@ def to_markdown(text):
     return Markdown(textwrap.indent(text, "> ", predicate=lambda _: True))
 
 
-from google.colab import userdata
 genai.configure(api_key='AIzaSyDUnXqUIVReCj1do3tAKqAQ3P-PPRSTcLU')
 model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -46,27 +45,38 @@ def main():
 
     all_news = es_government_news + qualificar_es_news
 
-    for titulo, link in all_news:
-        print(titulo)
-        print(link)
+    with open("noticia_resumo.txt", "w", encoding="utf-8") as file:
+        for titulo, link in all_news:
+            print(titulo)
+            print(link)
 
-        url =link
+            response = requests.get(link)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
+            # Seleciona a div com a classe "clearfix body-part"
+            noticias = soup.select('div.clearfix.body-part')
+            noticiaTratada = ""
 
-        noticias = soup.select('div.clearfix.body-part')
-        noticiaTratada=""
-        for noticia in noticias:
-          noticiaTratada=noticiaTratada+(noticia.get_text(strip=True))
+            # Concatena o texto da notícia
+            for noticia in noticias:
+                noticiaTratada += noticia.get_text(strip=True) + "\n\n"
 
+            # Gera o resumo (substitua o código abaixo pelo seu gerador de resumos)
+            context = noticiaTratada
+            response = model.generate_content(f"Faça um resumo de: {context}")
+            resumo = response.text
+            print(resumo)
+            print('-' * 80)
 
-        context=noticiaTratada
-        response = model.generate_content(f"Faça um resumo de: {context}")
-        print(response.text)
-        print('-' * 80)
+            # Salva o conteúdo e o resumo no arquivo texto
+            file.write("Título: " + titulo + "\n")
+            file.write("Link: " + link + "\n")
+            file.write("Notícia Completa:\n" + noticiaTratada + "\n")
+            file.write("Resumo:\n" + resumo + "\n")
+            file.write("-" * 80 + "\n\n")
 
+    print("Arquivo 'noticia_resumo.txt' salvo com sucesso!")
 
 if __name__ == "__main__":
     main()
