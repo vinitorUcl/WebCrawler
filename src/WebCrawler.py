@@ -38,3 +38,20 @@ def scrape_qualificar_es():
     soup = BeautifulSoup(response.text, 'html.parser')
     noticias = soup.select('div div div ul li div div div div h4 a')
     return [(noticia.get_text(), base_url + noticia['href']) for noticia in noticias if 'vagas' in noticia.get_text().lower() or 'cursos' in noticia.get_text().lower()]
+
+
+def main():
+    es_government_news = scrape_es_government()
+    qualificar_es_news = scrape_qualificar_es()
+
+    all_news = es_government_news + qualificar_es_news
+
+    for titulo, link in all_news:
+        print(titulo)
+        print(link)
+
+        url =link
+
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
