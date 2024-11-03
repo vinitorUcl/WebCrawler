@@ -14,7 +14,7 @@ def to_markdown(text):
     text = text.replace("•", "  *")
     return Markdown(textwrap.indent(text, "> ", predicate=lambda _: True))
 
-    # Used to securely store your API key
+
 from google.colab import userdata
 genai.configure(api_key='AIzaSyDUnXqUIVReCj1do3tAKqAQ3P-PPRSTcLU')
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -55,3 +55,18 @@ def main():
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        noticias = soup.select('div.clearfix.body-part')
+        noticiaTratada=""
+        for noticia in noticias:
+          noticiaTratada=noticiaTratada+(noticia.get_text(strip=True))
+
+
+        context=noticiaTratada
+        response = model.generate_content(f"Faça um resumo de: {context}")
+        print(response.text)
+        print('-' * 80)
+
+
+if __name__ == "__main__":
+    main()
